@@ -14,6 +14,8 @@ class WorkWithFiles {
     private static int COUNTER = 0;
     public static String CURRENT_FILE = "";
 
+    private boolean IS_COMMENT_BIGGER_THEN_ONE_LINE = false;
+
     public void startSearchingInFiles() {
         File file = new File(getPathFromConsole());
         search(file);
@@ -28,7 +30,7 @@ class WorkWithFiles {
     }
 
     public void search(File file) {
-        System.out.println("Пошук файлів дерикторії....");
+        System.out.println("Пошук файлів директорії....");
         if (file.isDirectory()) {
             for (File temp : file.listFiles()) {
                 CURRENT_FILE = temp.getPath();
@@ -79,14 +81,31 @@ class WorkWithFiles {
     private void writeChangedInfoToFile(File newFile, List<String> infoFromInputFile) {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(newFile.getPath(), true))) {
             for (String line : infoFromInputFile) {
-                ///\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/
-                Pattern pat=Pattern.compile("[ \\t]*//.*");
-                Matcher match=pat.matcher(line);
-                String result=match.replaceAll("");
+                String result=RemoveComments(line);
                 bufferedWriter.write(result + System.lineSeparator());
             }
         } catch (IOException e) {
             throw new RuntimeException("Can't write to this file, " + newFile.getPath(), e);
         }
     }
+
+    private String RemoveComments(String str){
+        if (str.contains("//")){
+            return new StringBuilder(str).delete(str.indexOf("//"),str.length()).toString();
+        }else if (str.startsWith("/*") && str.endsWith("*/") ){
+            return new StringBuilder(str).delete(0,str.indexOf("*/")+2).toString();
+        }else if (str.startsWith("/*")){
+            IS_COMMENT_BIGGER_THEN_ONE_LINE = true;
+            return new StringBuilder(str).delete(0,str.length()).toString();
+        }else if (IS_COMMENT_BIGGER_THEN_ONE_LINE){
+            if (str.startsWith("*/")){
+                IS_COMMENT_BIGGER_THEN_ONE_LINE=false;
+                return new StringBuilder(str).delete(0,str.length()).toString();
+            }
+            return new StringBuilder(str).delete(0,str.length()).toString();
+        }
+    return str;
+
+    }
+
 }
