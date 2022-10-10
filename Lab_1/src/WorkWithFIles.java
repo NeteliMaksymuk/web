@@ -6,8 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 class WorkWithFiles {
     private static final String NEW_PATH = "resources/results";
@@ -24,23 +23,23 @@ class WorkWithFiles {
     private String getPathFromConsole() {
         String path;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Введіть шлях до файлу:");
+        System.out.println("Enter the file path:");
         path = scanner.next();
         return path;
     }
 
     public void search(File file) {
-        System.out.println("Пошук файлів директорії....");
+        System.out.println("Search directory files....");
         if (file.isDirectory()) {
             for (File temp : file.listFiles()) {
                 CURRENT_FILE = temp.getPath();
                 new WorkWithFiles().search(new File(WorkWithFiles.CURRENT_FILE));
             }
         } else if (file.getName().endsWith(".java")) {
-            System.out.println("Файл з розширенням .java знайдено!");
+            System.out.println("File with extension .java found!");
             createNewDirWithModifyFiles(file);
         } else {
-            System.out.println("we have a problem...");
+            System.out.println("we have a problem...No such directory exists");
         }
     }
 
@@ -49,7 +48,7 @@ class WorkWithFiles {
 
         File newDir = new File(NEW_PATH);
         if (!newDir.exists()) {
-            System.out.println("Створена нова дерикторія з результатами");
+            System.out.println("A new directory with the results has been created");
             newDir.mkdir();
         }
         File newFile = createNewFile();
@@ -70,7 +69,7 @@ class WorkWithFiles {
         File newFile = new File(NEW_PATH + "/resultFile" + COUNTER + ".java");
         try {
             newFile.createNewFile();
-            System.out.println("Створено файл з результатом  " + COUNTER);
+            System.out.println("A result file has been created  " + COUNTER);
             COUNTER++;
         } catch (IOException e) {
             throw new RuntimeException("Can't create file, ", e);
