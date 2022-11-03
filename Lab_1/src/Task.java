@@ -1,6 +1,14 @@
+import java.io.File;
+
 public class Task implements Runnable {
-    public void run(){
-            WorkWithFiles workwithfiles = new WorkWithFiles();
-            workwithfiles.startSearchingInFiles();
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName()
+                + "start");
+        new WorkWithFiles().search(new File(WorkWithFiles.CURRENT_FILE));
+        System.out.println(Thread.currentThread().getName()
+                + "end");
     }
 }
+
+

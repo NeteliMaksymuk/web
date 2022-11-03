@@ -33,7 +33,13 @@ class WorkWithFiles {
         if (file.isDirectory()) {
             for (File temp : file.listFiles()) {
                 CURRENT_FILE = temp.getPath();
-                new WorkWithFiles().search(new File(WorkWithFiles.CURRENT_FILE));
+                Thread pool_1 = new Thread( new Task());
+                pool_1.start();
+                try {
+                    pool_1.join();
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                }
             }
         } else if (file.getName().endsWith(".java")) {
             System.out.println("File with extension .java found!");
@@ -97,7 +103,7 @@ class WorkWithFiles {
             IS_COMMENT_BIGGER_THEN_ONE_LINE = true;
             return new StringBuilder(str).delete(0,str.length()).toString();
         }else if (IS_COMMENT_BIGGER_THEN_ONE_LINE){
-            if (str.startsWith("*/")){
+            if (str.endsWith("*/")){
                 IS_COMMENT_BIGGER_THEN_ONE_LINE=false;
                 return new StringBuilder(str).delete(0,str.length()).toString();
             }
